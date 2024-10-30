@@ -299,8 +299,9 @@ void sys_utilities(char* utilityName, int value)
 void* sys_sbrk(int increment)
 {
 	//Comment the following line before start coding...
-	//panic("not implemented yet");
-	 return (void *) syscall(SYS_sbrk,increment,0,0,0,0);
+	//panic("not implemented yet");k
+	int kkk =increment;
+	 return (void *) syscall(SYS_sbrk, kkk,0,0,0,0);
 
 }
 
@@ -308,14 +309,19 @@ void sys_free_user_mem(uint32 virtual_address, uint32 size)
 {
 	//Comment the following line before start coding...
 	//panic("not implemented yet");
-	syscall(SYS_free_user_mem,virtual_address,size,0,0,0);
+	uint32 tasn= virtual_address;
+	 uint32 bas= size;
+	syscall(SYS_free_user_mem,tasn,bas,0,0,0);
 }
 
 void sys_allocate_user_mem(uint32 virtual_address, uint32 size)
 {
 	//Comment the following line before start coding...
 	//panic("not implemented yet");
-	syscall(SYS_allocate_user_mem,virtual_address,size,0,0,0);
+	uint32 tasn= virtual_address;
+		 uint32 bas= size;
+
+	syscall(SYS_allocate_user_mem,tasn,bas,0,0,0);
 
 }
 

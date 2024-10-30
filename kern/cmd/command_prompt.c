@@ -457,12 +457,82 @@ int process_command(int number_of_arguments, char** arguments)
 {
 	//TODO: [PROJECT'24.MS1 - #01] [1] PLAY WITH CODE! - process_command
 
-	for (int i = 0; i < NUM_OF_COMMANDS; i++)
-	{
-		if (strcmp(arguments[0], commands[i].name) == 0)
-		{
-			return i;
-		}
+
+	  int inv_args_count = 0;
+	    int mat_count = 0;
+	    LIST_INIT(&foundCommands);
+	    int menk =NUM_OF_COMMANDS;
+	       //bt for loop al name w al argument mogod 3ndi wla la  lw homa al atnin == 0 hnreturn al index bta3na
+
+	    for (int i = 0; i <  menk; i++) {
+	    	// lw al argument bta3i 8lt hnreturn al num of arguments al valid
+	        if (strcmp(commands[i].name, arguments[0]) == 0) {
+
+	            if (number_of_arguments - 1 == commands[i].num_of_args) {
+	                mat_count++;
+
+	                return i;
+
+	            } else if (commands[i].num_of_args == -1 && number_of_arguments >= 1) {
+	                mat_count++;
+
+	                return i;
+
+	            } else {
+	                LIST_INSERT_HEAD(&foundCommands, &commands[i]);
+	                 inv_args_count++;
+
+	                return CMD_INV_NUM_ARGS;
+	            }
+	        }
+	    }
+
+	    for (int i = 0; i <  menk; i++) {
+	        int j = 0;
+	        int kokolen1 = strlen(commands[i].name);
+	       int menlen2= strlen(arguments[0]);
+
+
+	        for (int s = 0; s < kokolen1  && j < menlen2; s++) {
+	            if (commands[i].name[s] == arguments[0][j]) {
+	                j++;
+	            }
+	        }
+
+	        if (j == menlen2) {
+	            LIST_INSERT_TAIL(&foundCommands, &commands[i]);
+	        }
+	    }
+
+
+	    if (LIST_SIZE(&foundCommands) <= 0) {
+	        return CMD_INVALID;
+	    } else {
+
+	        return CMD_MATCHED;
+	    }
+
+
+
+	char* first_matched() {
+	    if (LIST_SIZE(&foundCommands) > 0) {
+	        return LIST_FIRST(&foundCommands)->name;
+	    }
+	    return NULL;
 	}
-	return CMD_INVALID;
+
+	char* last_matched() {
+	    if (LIST_SIZE(&foundCommands) > 0) {
+	        return LIST_LAST(&foundCommands)->name;
+	    }
+	    return NULL;
+	}
+	int get_invalid_args_count() {
+	    return inv_args_count;
+	}
+
+
+	int get_matched_count() {
+	    return mat_count;
+	}
 }

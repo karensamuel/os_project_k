@@ -302,10 +302,12 @@ int sys_pf_calculate_allocated_pages(void)
 /* USER HEAP SYSTEM CALLS */
 /*******************************/
 int validate_tst_k(uint32 virtual_address){
+	//bt2kd an al va msh b 0
 	if(virtual_address== 0){
 		//env_exit();
 		return 0;
 	}
+	// bt2kd ano fe al randnge bta3 al heap
 	else if (virtual_address < USER_HEAP_START || virtual_address >= USER_HEAP_MAX){
 		//env_exit();
 		return 0;
@@ -316,8 +318,8 @@ int validate_tst_k(uint32 virtual_address){
 }
 void sys_free_user_mem(uint32 virtual_address, uint32 size)
 {
-	int checkk=validate_tst_k(virtual_address);
-		if(checkk==0){
+	int checkkoko=validate_tst_k(virtual_address);
+		if(checkkoko==0){
 			env_exit();
 		}else{
 	if(isBufferingEnabled())
@@ -335,8 +337,8 @@ void sys_free_user_mem(uint32 virtual_address, uint32 size)
 void sys_allocate_user_mem(uint32 virtual_address, uint32 size)
 {
 	//TODO: [PROJECT'24.MS1 - #03] [2] SYSTEM CALLS - Params Validation
-	int checkk=validate_tst_k(virtual_address);
-	if(checkk==0){
+	int checkkoko=validate_tst_k(virtual_address);
+	if(checkkoko==0  ){
 		env_exit();
 	}else{
 	allocate_user_mem(cur_env, virtual_address, size);
