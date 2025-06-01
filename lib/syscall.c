@@ -324,4 +324,55 @@ void sys_allocate_user_mem(uint32 virtual_address, uint32 size)
 	syscall(SYS_allocate_user_mem,tasn,bas,0,0,0);
 
 }
+void sys_initqueue(struct Env_Queue* queue)
+{
+	syscall(SYS_initqueue, (uint32)queue,0, 0, 0, 0);
+	return;
+}
+void sys_enqueue(struct Env_Queue* queue, struct Env* env)
+{
+	syscall(SYS_enqueue, (uint32)queue,(uint32)env, 0, 0, 0);
+	return;
+}
+void* sys_dequeue(struct Env_Queue* queue)
+{
+	return (void *) syscall(SYS_dequeue, (uint32)queue,0, 0, 0, 0);
 
+}
+void sys_schedinsertready(struct Env* env)
+{
+	  syscall(SYS_schedinsertready, (uint32)env,0, 0, 0, 0);
+	  return;
+}
+void sys_fos_scheduler()
+{
+	  syscall(SYS_fos_scheduler, 0,0, 0, 0, 0);
+	  return;
+}
+void sys_sleep_sem(struct Env_Queue* queue)
+{
+	syscall(SYS_sleep_sem, (uint32)queue,0, 0, 0, 0);
+	return;
+
+}
+void sys_sleep_sem_sig(struct Env_Queue* queue)
+{
+	syscall(SYS_sleep_sem_sig, (uint32)queue,0, 0, 0, 0);
+	return;
+
+}
+void sys_acquire_spin()
+{
+	  syscall(SYS_acquire_spin, 0,0, 0, 0, 0);
+	  return;
+}
+void sys_release_spin()
+{
+	  syscall(SYS_release_spin, 0,0, 0, 0, 0);
+	  return;
+}
+void sys_env_set_priority(int32 envID, int priority)
+{
+
+	syscall(SYS_env_set_priority, envID, priority, 0, 0, 0);
+}

@@ -64,15 +64,22 @@ _main(void)
 	id1 = sys_create_env("shr2Slave1", (myEnv->page_WS_max_size),(myEnv->SecondListSize), (myEnv->percentage_of_WS_pages_to_be_removed));
 	id2 = sys_create_env("shr2Slave1", (myEnv->page_WS_max_size), (myEnv->SecondListSize),(myEnv->percentage_of_WS_pages_to_be_removed));
 	id3 = sys_create_env("shr2Slave1", (myEnv->page_WS_max_size), (myEnv->SecondListSize),(myEnv->percentage_of_WS_pages_to_be_removed));
-
-	//to check that the slave environments completed successfully
+//    cprintf("HHHHHHHHHHHHHHHHHHHHHHHHHHHH\n");
+//    cprintf("id1=%d ",id1);
+//    cprintf("id2=%d ",id2);
+//    cprintf("id3=%d ",id3);
+//to check that the slave environments completed successfully
 	rsttst();
-
+	//cprintf("OOOOOOOOOOOOOOOOOOOOO\n");
 	sys_run_env(id1);
+//	cprintf("YYYYYYYYYYYYYYYYYYYY\n");
 	sys_run_env(id2);
+//	cprintf("LLLLLLLLLLLLLLLLLLLLLLL\n");
 	sys_run_env(id3);
+//	cprintf("RRRRRRRRRRRRRRRRRRRRRRRR\n");
 
 	//to ensure that the slave environments completed successfully
+	//cprintf("Before loop, gettst() = %d\n", gettst());
 	while (gettst()!=3) ;// panic("test failed");
 
 
@@ -90,6 +97,7 @@ _main(void)
 
 	//to ensure that the slave environment edits the z variable
 	while (gettst() != 4) ;
+
 
 	if (*z != 50)
 	{is_correct = 0; cprintf("Error!! Please check the creation (or the getting) of shared variables!!\n\n\n");}

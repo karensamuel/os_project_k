@@ -66,7 +66,9 @@ void _main(void)
 		{
 			freeFrames = sys_calculate_free_frames() ;
 			usedDiskPages = sys_pf_calculate_allocated_pages() ;
+			cprintf("3\n");
 			ptr_allocations[0] = malloc(2*Mega-kilo);
+			//cprintf("3\n",ptr_allocations[0] );
 			if ((uint32) ptr_allocations[0] != (pagealloc_start)) {is_correct = 0; cprintf("1 Wrong start address for the allocated space... \n");}
 			expectedNumOfFrames = 1 /*table*/ ;
 			actualNumOfFrames = freeFrames - sys_calculate_free_frames();

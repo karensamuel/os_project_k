@@ -32,8 +32,8 @@ _main(void)
 	int sem1val = semaphore_count(shopCapacitySem);
 	int sem2val = semaphore_count(dependSem);
 
-	//wait a while to allow the slaves to finish printing their closing messages
-	env_sleep(10000);
+	 //wait a while to allow the slaves to finish printing their closing messages
+	  env_sleep(10000);
 	if (sem2val == 0 && sem1val == shopCapacity)
 		cprintf("\nCongratulations!! Test of Semaphores [2] completed successfully!!\n\n\n");
 	else

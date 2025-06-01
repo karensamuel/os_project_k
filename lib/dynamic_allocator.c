@@ -116,20 +116,17 @@ void initialize_dynamic_allocator(uint32 daStart, uint32 initSizeOfAllocatedSpac
 	//COMMENT THE FOLLOWING LINE BEFORE START CODING
 	//panic("initialize_dynamic_allocator is not implemented yet");
 
-	//begin block of heap
+
 	uint32 *Beginkar_Block , *Endmen_Block;
-	//create Begin Block
+
 	Beginkar_Block= (uint32 *)daStart;
 	*Beginkar_Block = 1;
 
-	//create End Block
 
 	uint32 Heap_Limitomn = daStart + initSizeOfAllocatedSpace - 4  ;
 	Endmen_Block = (uint32 *)Heap_Limitomn;
 	*Endmen_Block = 1;
 
-//	uint32 *Header_Ptr = Begin_Block;
-//	Header_Ptr += 1; //take space for header and size for Begin.
 
 	uint32 *headerbas = Beginkar_Block  + 1;
 	uint32 *footertas =  (uint32 *)(daStart + initSizeOfAllocatedSpace - 8) ;
@@ -154,24 +151,21 @@ void set_block_data(void* va, uint32 totalSize, bool isAllocated)
 	uint32 totally_basmoves = (uint32) va + (totalSize - 8) ;
 
 
-	//reach to size of footer.
-//	va = (void *)((char *)va + totalSize);
-	//ptr point to footer
+
 	uint32 * blooockarFooter = (uint32 *)totally_basmoves;
 	if(isAllocated == 1 && get_block_size(va) % 2 == 0)
 	{
-		//block is allocated (lsb = 1).
+
 		totalSize++;
 	}
 	else if(isAllocated == 0 && get_block_size(va) % 2 != 0)
 	{
-		///kkkk
+
 		totalSize--;
 	}
 	*bloockomnHiader = totalSize;
 	*blooockarFooter = totalSize;
-	//for check only
-	//cprintf("The Block Size: %d, My Block Free? %d\n", get_block_size(va), is_free_block(va));
+
 }
 
 
@@ -181,84 +175,126 @@ void set_block_data(void* va, uint32 totalSize, bool isAllocated)
 void *alloc_block_FF(uint32 size)
 {
 	//==================================================================================
-	//DON'T CHANGE THESE LINES==========================================================
-	//==================================================================================
-	{
-		if (size % 2 != 0) size++;	//ensure that the size is even (to use LSB as allocation flag)
-		if (size < DYN_ALLOC_MIN_BLOCK_SIZE)
-			size = DYN_ALLOC_MIN_BLOCK_SIZE ;
-		if(size == 0)
+		//DON'T CHANGE THESE LINES==========================================================
+		//==================================================================================
 		{
-			return NULL;
-		}
-		if (!is_initialized)
-		{
-			uint32 required_size = size + 2*sizeof(int) /*header & footer*/ + 2*sizeof(int) /*da begin & end*/ ;
-			uint32 da_start = (uint32)sbrk(ROUNDUP(required_size, PAGE_SIZE)/PAGE_SIZE);
-			uint32 da_break = (uint32)sbrk(0);
-			initialize_dynamic_allocator(da_start, da_break - da_start);
-		}
-	}
-	//==================================================================================
-	//==================================================================================
-
-	//TODO: [PROJECT'24.MS1 - #06] [3] DYNAMIC ALLOCATOR - alloc_block_FF
-	//COMMENT THE FOLLOWING LINE BEFORE START CODING
-	//panic("alloc_block_FF is not implemented yet");
-	//Your Code is Here...
-    size += 8; // 4 bytes header + 4 bytes footer
-    uint32 Iss_Blockar_Foundmen = 0;
-	struct BlockElement *blkarmen , *Founddd_Blockar;
-	LIST_FOREACH(blkarmen, &freeBlocksList)
-	{
-		//al size al birg3 mn  get block size hoa al (header + payload + footer) size
-		if(get_block_size(blkarmen) >= size)
-		{
-			Iss_Blockar_Foundmen = 1;
-			Founddd_Blockar = blkarmen;
-			uint32 Block_Size = get_block_size(blkarmen);//save the founded block size.
-			if((get_block_size(blkarmen) == size) || ((get_block_size(blkarmen) - size) <  16))
+			if (size % 2 != 0) size++;	//ensure that the size is even (to use LSB as allocation flag)
+			if (size < DYN_ALLOC_MIN_BLOCK_SIZE)
+				size = DYN_ALLOC_MIN_BLOCK_SIZE ;
+			if(size == 0)
 			{
-				//5aly al block state allocated 3mtri2 call function set block data.
-				set_block_data((void*)blkarmen , get_block_size(blkarmen) , 1);
-			}
-			else
-			{
-				//set the data for allocated block.
-				set_block_data((void*)blkarmen , size , 1);
-				//remove it from the free block list.
-				struct BlockElement* Helping_ptr;
-				uint32 total_moves = (uint32)blkarmen;
-				total_moves += size;// header + footer + payload
-				Helping_ptr = (struct BlockElement*)total_moves ;
-				uint32 Reminder_size = Block_Size - size;
-
-				set_block_data((void*)Helping_ptr , Reminder_size , 0);
-				insert_block_sorted(Helping_ptr);
-			}
-			LIST_REMOVE(&freeBlocksList, Founddd_Blockar);
-			break;
-		}
-	}
-	if(Iss_Blockar_Foundmen)
-	{
-		return (void *) blkarmen;
-	}
-	else
-	{
-		    uint32 numOfPages = size / PAGE_SIZE; // a7sb required pages to call sbrk
-			void *new_block_address = sbrk(numOfPages);
-			if (new_block_address != (void *)-1)
-			{
-//				alloc_block_FF(size);
-				return alloc_block_FF(size);
-			}
-			else
-			{
-				// Fashl en y allocate more memory
 				return NULL;
 			}
-	}
+			if (!is_initialized)
+			{
+				uint32 required_size = size + 2*sizeof(int) /*header & footer*/ + 2*sizeof(int) /*da begin & end*/ ;
+				uint32 da_start = (uint32)sbrk(ROUNDUP(required_size, PAGE_SIZE)/PAGE_SIZE);
+				uint32 da_break = (uint32)sbrk(0);
+				initialize_dynamic_allocator(da_start, da_break - da_start);
+			}
+		}
+		//==================================================================================
+		//==================================================================================
+
+		//TODO: [PROJECT'24.MS1 - #06] [3] DYNAMIC ALLOCATOR - alloc_block_FF
+		//COMMENT THE FOLLOWING LINE BEFORE START CODING
+		//panic("alloc_block_FF is not implemented yet");
+		//Your Code is Here...
+	    size += 8; // 4 bytes header + 4 bytes footer
+	    uint32 Iss_Blockar_Foundmen = 0;
+		struct BlockElement *blkarmen , *Founddd_Blockar;
+		LIST_FOREACH(blkarmen, &freeBlocksList)
+		{
+			if(get_block_size(blkarmen) >= size)
+			{
+				Iss_Blockar_Foundmen = 1;
+				Founddd_Blockar = blkarmen;
+				uint32 Block_Size = get_block_size(blkarmen);
+				if((get_block_size(blkarmen) == size) || ((get_block_size(blkarmen) - size) <  16))
+				{
+
+					set_block_data((void*)blkarmen , get_block_size(blkarmen) , 1);
+				}
+				else
+				{
+
+					set_block_data((void*)blkarmen , size , 1);
+					struct BlockElement* Helping_ptr;
+					uint32 total_moves = (uint32)blkarmen;
+					total_moves += size;
+					Helping_ptr = (struct BlockElement*)total_moves ;
+					uint32 Reminder_size = Block_Size - size;
+					set_block_data((void*)Helping_ptr , Reminder_size , 0);
+					insert_block_sorted(Helping_ptr);
+				}
+				LIST_REMOVE(&freeBlocksList, Founddd_Blockar);
+				break;
+			}
+		}
+		if(Iss_Blockar_Foundmen)
+		{
+			return (void *) blkarmen;
+		}
+		else
+		{
+			    uint32 numOfPages = ROUNDUP(size, PAGE_SIZE)/PAGE_SIZE; // a7sb required pages to call sbrk
+			    uint32 space = numOfPages * PAGE_SIZE;
+			//    cprintf("BEFOOOOOOOOOOOOOOOOOORE\n");
+			    uint32 *new_block_address = (uint32*)sbrk(numOfPages); //old break
+				if (new_block_address != (void *)-1)
+				{
+
+					uint32 prev_footer = ((uint32)new_block_address) - 8;
+
+								uint32*prv_prt=(uint32*)prev_footer;
+								uint32 flag=(~(*prv_prt) & 0x1) ;
+
+
+								uint32 ptr = (uint32)new_block_address ;
+								ptr -= 4;
+
+								if(flag)
+								{
+
+								uint32 prv_block_size= (*prv_prt)& ~(0x1);
+								uint32 payload_foot =  ((uint32)prev_footer);
+								payload_foot -= (prv_block_size-8);
+								uint32*prv_header_ptr=(uint32*)(payload_foot);
+					        	 LIST_REMOVE(&freeBlocksList,(struct BlockElement*)prv_header_ptr);
+								set_block_data(prv_header_ptr,(prv_block_size + space ),0);
+								insert_block_sorted((struct BlockElement*)prv_header_ptr);
+								ptr+= space;
+								uint32* end_block = (uint32*) ptr;
+								*end_block = 1;
+								}
+								else
+								{
+
+
+
+
+									uint32 *va = new_block_address ;
+
+									set_block_data(va,space ,0);
+
+									uint32*prv_header_ptr=va;
+									insert_block_sorted((struct BlockElement*)prv_header_ptr);
+									ptr+=get_block_size((struct BlockElement*) new_block_address);
+									uint32* end_block = (uint32*) ptr;
+
+									*end_block = 1;
+
+								}
+
+
+					return alloc_block_FF(size - 8);
+				}
+				else
+				{
+
+					return NULL;
+				}
+		}
 }
 //=========================================
 // [4] ALLOCATE BLOCK BY BEST FIT:
@@ -324,12 +360,12 @@ void *alloc_block_BF(uint32 size)
 			else
 			{
 //				cprintf("10\n");
-				//set the data for allocated block.
+
 				set_block_data((void*)bsttt_blkkkk, size , 1);
-				//remove it from the free block list.
+
 				struct BlockElement* Helping_ptr;
 				uint32 total_moves = (uint32)bsttt_blkkkk;
-				total_moves += size;// header + footer + payload
+				total_moves += size;
 				Helping_ptr = (struct BlockElement*)total_moves ;
 				uint32 Reminder_size = bestttt_sizekkk - size;
 				set_block_data((void*)Helping_ptr , Reminder_size , 0);
@@ -341,17 +377,61 @@ void *alloc_block_BF(uint32 size)
 		}
 		else
 		{
-			return NULL;
-			 uint32 numOfPages = size / PAGE_SIZE;
-			void *new_block_address = sbrk(numOfPages);
-			if (new_block_address != (void *)-1)
-			{
-//
-				return alloc_block_BF(size);
+		    uint32 numOfPages = ROUNDUP(size, PAGE_SIZE)/PAGE_SIZE; // a7sb required pages to call sbrk
+				    uint32 space = numOfPages * PAGE_SIZE;
+				//    cprintf("BEFOOOOOOOOOOOOOOOOOORE\n");
+				    uint32 *new_block_address = (uint32*)sbrk(numOfPages); //old break
+					if (new_block_address != (void *)-1)
+					{
+
+						uint32 prev_footer = ((uint32)new_block_address) - 8;
+
+									uint32*prv_prt=(uint32*)prev_footer;
+									uint32 flag=(~(*prv_prt) & 0x1) ;
+
+
+									uint32 ptr = (uint32)new_block_address ;
+									ptr -= 4;
+
+									if(flag)
+									{
+
+									uint32 prv_block_size= (*prv_prt)& ~(0x1);
+									uint32 payload_foot =  ((uint32)prev_footer);
+									payload_foot -= (prv_block_size-8);
+									uint32*prv_header_ptr=(uint32*)(payload_foot);
+						        	 LIST_REMOVE(&freeBlocksList,(struct BlockElement*)prv_header_ptr);
+									set_block_data(prv_header_ptr,(prv_block_size + space ),0);
+									insert_block_sorted((struct BlockElement*)prv_header_ptr);
+									ptr+= space;
+									uint32* end_block = (uint32*) ptr;
+									*end_block = 1;
+									}
+									else
+									{
+
+
+
+
+										uint32 *va = new_block_address ;
+
+										set_block_data(va,space ,0);
+
+										uint32*prv_header_ptr=va;
+										insert_block_sorted((struct BlockElement*)prv_header_ptr);
+										ptr+=get_block_size((struct BlockElement*) new_block_address);
+										uint32* end_block = (uint32*) ptr;
+
+										*end_block = 1;
+
+									}
+
+
+						return alloc_block_BF(size - 8);
 			}
 			else
 			{
-				// Failed to allocate more memory
+
 				return NULL;
 			}
 		}
@@ -380,6 +460,7 @@ void free_block(void *va)
 
 			 if(is_free_block(nextas_prt)==0 && flag==0)
 			 {
+
 			set_block_data(va,currentkar_block_sizeee,0);
 //			struct BlockElement*me=(struct BlockElement*)va;
 			insert_block_sorted((struct BlockElement*)va);
@@ -392,7 +473,7 @@ void free_block(void *va)
 				 insert_block_sorted((struct BlockElement*)va);
 
 			 }
-			 else if(is_free_block(nextas_prt)==0&& flag==1)
+			 else if(is_free_block(nextas_prt)==0 && flag==1)
 			 {
 				 	uint32 prv_block_size= (*prv_prt)& ~(0x1);
 				 	uint32 payload_foot =  (uint32)va;
@@ -463,48 +544,47 @@ void *realloc_block_FF(void *va, uint32 new_size)
 
 	if(new_size > oldy_siz)
 	{
-		cprintf("cond1\n");
+	//	cprintf("cond1\n");
 		if((is_free_block(point_nex_header)) && ((oldy_siz + size_nex_block) >= new_size)) //if size even then next block is free
 		{
 
-			cprintf("cond2\n");
+//			cprintf("cond2\n");
 			 LIST_REMOVE(&freeBlocksList, (struct BlockElement*)point_nex_header);
-			 cprintf("5\n");
+			// cprintf("5\n");
 				if(((oldy_siz + size_nex_block)-(new_size)) < 16 || ((oldy_siz + size_nex_block)-(new_size)) == 0)  //internal fragmentation
 				  {
-					  cprintf("cond3\n");
+					 // cprintf("cond3\n");
 						//uint32 new_footer = old_footer + size_nex_block ;
 						//uint32 *point_new_footer = (uint32 *)new_footer;
 
 
 					    //intern_frg = (old_size + size_nex_block)-(new_size);
 						set_block_data((void *)va,(oldy_siz + size_nex_block) ,1);
-						cprintf("done3\n");
+					//	cprintf("done3\n");
 				   }
 				 else
 				 {
-						//uint32 new_footer = (uint32)va + (new_size -8) ; // va + payload for new block
-						//uint32 *point_new_footer = (uint32 *)new_footer;
 					    uint32 moves = (uint32) va + new_size ;
 					    struct BlockElement* point_newblock = (struct BlockElement*)moves;
-					    cprintf("cond6\n");
+					  //  cprintf("cond6\n");
 						set_block_data(va,new_size,1);
-						cprintf("cond7\n");
+					//	cprintf("cond7\n");
 						set_block_data((void *)moves,(size_nex_block + oldy_siz)- new_size,0);
-						cprintf("cond8\n");
+					//	cprintf("cond8\n");
 						insert_block_sorted(point_newblock);
-						cprintf("cond9\n");
-
+						//cprintf("cond9\n");
 				  }
 
 		  }
 
 		else if(!is_free_block(point_nex_header) || (((oldy_siz + size_nex_block) < new_size) && is_free_block(point_nex_header)) )
 		{
-			cprintf("cond10\n");
-			free_block(va);
-			return alloc_block_FF(new_size);
-			cprintf("cond11\n");
+		//	cprintf("cond10\n");
+
+		    uint32 *ret_add = alloc_block_FF(new_size);
+		    free_block(va);
+		    return ret_add;
+			//cprintf("cond11\n");
 		}
 		else if(LIST_SIZE(&freeBlocksList) == 0)
 
@@ -513,21 +593,21 @@ void *realloc_block_FF(void *va, uint32 new_size)
 									void *new_block_address = sbrk(numOfPages);
 									if (new_block_address != (void *)-1)
 									{
-						//				alloc_block_FF(size);
+						//
 										return alloc_block_FF(new_size);
 									}
 									else
 									{
-										// Failed to allocate more memory
+
 										return NULL;
 									}
-			cprintf("cond12\n");
+		//	cprintf("cond12\n");
 			return NULL;
 		}
 	}
 	else          //new size 22l mn al old
 	{
-		cprintf("cond13\n");
+	//	cprintf("cond13\n");
 
 
 
@@ -535,13 +615,13 @@ void *realloc_block_FF(void *va, uint32 new_size)
 		   {
 			         uint32 moves = (uint32) va + new_size  ;
 					 struct BlockElement* point_newblock = (struct BlockElement*)moves;
-					cprintf("cond18\n");
+				//	cprintf("cond18\n");
 					LIST_REMOVE(&freeBlocksList, (struct BlockElement*)point_nex_header);
 					 set_block_data((void *)point_newblock,(oldy_siz - new_size)+size_nex_block,0);
 					 set_block_data(va,new_size,1);
-					 cprintf("cond19\n");
+				//	 cprintf("cond19\n");
 					 insert_block_sorted(point_newblock);
-					 cprintf("cond20\n");
+				//	 cprintf("cond20\n");
 
 
 		  }
