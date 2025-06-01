@@ -8,14 +8,14 @@ Enhance your OS development skills by building core components in the Faculty Op
 ## 👥 Team Members
 
   
-| Name             | GitHub Username      |
+| Name             | GitHub Link      |
 | ---------------- | -------------------- |
-| Member 1         | @username1           |
-| Member 2         | @username2           |
-| Member 3         | @username3           |
-| Member 4         | @username4           |
-| Member 5         | @username5           |
-| Member 6         | @username6           |
+| Tasneem Mohamed Ahmed Mohamed         | https://github.com/Tasneem357Mohamed          |
+| Bsmala Tarek Kamal Khalil Elbagoury         | https://github.com/Bsmalatarek          |
+| Omnia Salah Mahmoud Hamed        | https://github.com/matata2020          |
+| Karen Samuel Gerges Shenoda        | https://github.com/karensamuel          |
+| Mennatullah Mohamed Ibrahim         | https://github.com/MennaHassaneen           |
+| Mennatullah Khaled Ahmed Mohamed       |https://github.com/MennaKhalled           |
 
 
 ---
