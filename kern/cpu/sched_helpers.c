@@ -43,6 +43,56 @@ int queue_size(struct Env_Queue* queue)
 		return 0;
 	}
 }
+//semaphor
+void sleep_sem(struct Env_Queue* queue) {
+
+
+	  struct Env *current_env = get_cpu_proc();  // Get the current running process
+
+	    if (!current_env || current_env->env_status != ENV_RUNNING) {
+	        return;
+	    }
+
+	    acquire_spinlock(&ProcessQueues.qlock);
+	    enqueue(queue, current_env);
+	 //   cprintf("***********enquing is done ***************\n");
+	    // bn8ir al status l blocked
+	    current_env->env_status = ENV_BLOCKED;
+	    sched();
+
+	    release_spinlock(&ProcessQueues.qlock);
+
+}
+void sleep_sem_sig(struct Env_Queue* queue) {
+
+
+	  struct Env *current_env = get_cpu_proc();  // Get the current running process
+
+	    if (!current_env || current_env->env_status != ENV_RUNNING) {
+	        return;
+	    }
+
+	    acquire_spinlock(&ProcessQueues.qlock);
+	    struct Env* p =(struct Env*) dequeue(queue);
+	   // cprintf("***********denquing is done ***************\n");
+	    //sched_insert_ready(p);
+	    assert(p != NULL);
+	    	{
+	    		//cprintf("\nInserting %d into ready queue 0\n", env->env_id);
+	    		p->env_status = ENV_READY ;
+	    		enqueue(&(ProcessQueues.env_ready_queues[p->priority]), p);
+	    	}
+	   // sched();
+
+	    release_spinlock(&ProcessQueues.qlock);
+
+}
+void acquire_spin() {
+	acquire_spinlock(&ProcessQueues.qlock);
+}
+void release_spin() {
+	release_spinlock(&ProcessQueues.qlock);
+}
 
 //====================================
 // [3] Enqueue env in the given queue:
@@ -138,6 +188,24 @@ void sched_insert_ready0(struct Env* env)
 		//cprintf("\nInserting %d into ready queue 0\n", env->env_id);
 		env->env_status = ENV_READY ;
 		enqueue(&(ProcessQueues.env_ready_queues[0]), env);
+	}
+}
+
+//============================================================
+// [2] Insert the given Env in the priority-based Ready Queue:
+//============================================================
+void sched_insert_ready(struct Env* env)
+{
+	/*To protect process Qs (or info of current process) in multi-CPU*/
+	if(!holding_spinlock(&ProcessQueues.qlock))
+		panic("sched: q.lock is not held by this CPU while it's expected to be.");
+	/*********************************************************************/
+
+	assert(env != NULL);
+	{
+		//cprintf("\nInserting %d into ready queue 0\n", env->env_id);
+		env->env_status = ENV_READY ;
+		enqueue(&(ProcessQueues.env_ready_queues[env->priority]), env);
 	}
 }
 
@@ -265,7 +333,7 @@ void sched_run_env(uint32 envId)
 		if(ptr_env->env_id == envId)
 		{
 			sched_remove_new(ptr_env);
-			sched_insert_ready0(ptr_env);
+			sched_insert_ready(ptr_env);
 
 			/*2015*///if scheduler not run yet, then invoke it!
 			if (mycpu()->scheduler_status == SCH_STOPPED)
@@ -522,7 +590,7 @@ void sched_run_all()
 	for (int i = 0; i < q_size; ++i)
 	{
 		ptr_env = dequeue(&ProcessQueues.env_new_queue);
-		sched_insert_ready0(ptr_env);
+		sched_insert_ready(ptr_env);
 	}
 
 	release_spinlock(&(ProcessQueues.qlock)); 	//CS on Qs
@@ -649,7 +717,8 @@ int env_get_nice(struct Env* e)
 	//[PROJECT] BSD Scheduler - env_get_nice
 	//Your code is here
 	//Comment the following line
-	panic("Not implemented yet");
+	//panic("Not implemented yet");
+	return 0;
 }
 
 void env_set_nice(struct Env* e, int nice_value)
@@ -657,7 +726,7 @@ void env_set_nice(struct Env* e, int nice_value)
 	//[PROJECT] BSD Scheduler - env_set_nice
 	//Your code is here
 	//Comment the following line
-	panic("Not implemented yet");
+	//panic("Not implemented yet");
 }
 
 int env_get_recent_cpu(struct Env* e)
@@ -665,7 +734,8 @@ int env_get_recent_cpu(struct Env* e)
 	//[PROJECT] BSD Scheduler - env_get_recent_cpu
 	//Your code is here
 	//Comment the following line
-	panic("Not implemented yet");
+	//panic("Not implemented yet");
+	return 0;
 }
 int get_load_average()
 {
@@ -673,8 +743,48 @@ int get_load_average()
 	//[PROJECT] BSD Scheduler - get_load_average
 	//Your code is here
 	//Comment the following line
-	panic("Not implemented yet");
+	//panic("Not implemented yet");
 	return 0;
 }
 /********* for BSD Priority Scheduler *************/
 //==================================================================================//
+
+/*2024*/
+/********* for Priority RR Scheduler *************/
+void env_set_priority(int envID, int priority)
+{
+	//TODO: [PROJECT'24.MS3 - #06] [3] PRIORITY RR Scheduler - env_set_priority
+	//Your code is here
+	//Comment the following line
+//	panic("Not implemented yet");
+
+
+	//cprintf("4\n");
+	struct Env* proc ;
+	envid2env(envID, &proc, 0);
+	acquire_spinlock(&(ProcessQueues.qlock));
+	proc->priority=priority;
+	if(proc->env_status==ENV_READY)
+	{
+		//cprintf("movvvvve to another red_qe\n");
+		struct Env*old=proc;
+		sched_remove_ready(old);
+		sched_insert_ready(proc);
+	}
+
+	release_spinlock(&(ProcessQueues.qlock));
+	//cprintf("finissssssssssssssssssh\n");
+
+
+}
+
+void sched_set_starv_thresh(uint32 starvThresh)
+{
+	//TODO: [PROJECT'24.MS3 - #06] [3] PRIORITY RR Scheduler - sched_set_starv_thresh
+	//Your code is here
+	//Comment the following line
+	//panic("Not implemented yet");
+	//cprintf("5\n");
+	starvation_Threshold=starvThresh;
+
+}

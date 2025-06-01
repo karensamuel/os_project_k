@@ -121,6 +121,10 @@ struct Env {
 
 	//=======================================================================
 	//TODO: [PROJECT'24.MS2 - #10] [3] USER HEAP - add suitable code here
+	//info about block_allocator for each process
+		uint32 start_uheap ;
+		uint32* uh_block_brk ;
+		uint32 uh_block_hlimit;
 
 	//=======================================================================
 	//for page file management

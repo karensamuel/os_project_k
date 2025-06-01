@@ -47,11 +47,21 @@ enum
 	SYS_check_LRU_lists_free,
 	SYS_check_WS_list,
 	SYS_utilities,
+	SYS_initqueue,
+	SYS_enqueue,
+	SYS_dequeue,
+	SYS_schedinsertready,
+	SYS_sleep_sem,
+	SYS_release_spin,
+	SYS_acquire_spin,
+	SYS_sleep_sem_sig,
 	/*2024*/
 	//TODO: [PROJECT'24.MS1 - #02] [2] SYSTEM CALLS - Add suitable code here
 	SYS_sbrk,
 	SYS_free_user_mem,
 	SYS_allocate_user_mem,
+	SYS_fos_scheduler,
+	SYS_env_set_priority,
 	//=====================================================================
 	NSYSCALLS
 };

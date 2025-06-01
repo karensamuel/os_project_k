@@ -16,7 +16,13 @@ int env_get_recent_cpu(struct Env* e) ;
 int get_load_average() ;
 /********* for BSD Priority Scheduler *************/
 
+/*2024*/
+void env_set_priority(int envID, int priority);
+void sched_set_starv_thresh(uint32 starvThresh);
+
+
 void sched_insert_ready0(struct Env* env);
+void sched_insert_ready(struct Env* env);
 void sched_remove_ready(struct Env* env);
 void sched_insert_new(struct Env* env);
 void sched_remove_new(struct Env* env);
@@ -43,4 +49,8 @@ void enqueue(struct Env_Queue* queue, struct Env* env);
 struct Env* dequeue(struct Env_Queue* queue);
 struct Env* find_env_in_queue(struct Env_Queue* queue, uint32 envID);
 void remove_from_queue(struct Env_Queue* queue, struct Env* e);
+void sleep_sem(struct Env_Queue* queue);
+void sleep_sem_sig(struct Env_Queue* queue) ;
+void release_spin();
+void acquire_spin();
 #endif	// !FOS_KERN_SCHED_HELPERS_H

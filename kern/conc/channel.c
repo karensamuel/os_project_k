@@ -30,7 +30,7 @@ void sleep(struct Channel *chan, struct spinlock *lk) {
 	//TODO: [PROJECT'24.MS1 - #10] [4] LOCKS - sleep
 		//COMMENT THE FOLLOWING LINE BEFORE START CODING
 	//	panic("sleep is not implemented yet");
-		//Your Code is Here...
+	//Your Code is Here...
 
 	  struct Env *currenttt_prockk_ahna_fiha = get_cpu_proc();  // Get the current running process
 
@@ -44,10 +44,9 @@ void sleep(struct Channel *chan, struct spinlock *lk) {
 	    enqueue(&chan->queue, currenttt_prockk_ahna_fiha);
 	    // bn8ir al status l blocked
 	    currenttt_prockk_ahna_fiha->env_status = ENV_BLOCKED;
-	    sched();
 
+	    sched();
 	    release_spinlock(&ProcessQueues.qlock);
-///////kkkkkkkk
 	    acquire_spinlock(lk);
 
 }
@@ -79,14 +78,11 @@ void wakeup_one(struct Channel *chan)
 			        blockedbas_env_bta3tna ->env_status=ENV_READY;
 
 			        // Insert the process into the ready queue
+			         sched_insert_ready(blockedbas_env_bta3tna );
 
-			         sched_insert_ready0(blockedbas_env_bta3tna );
-
-			               //  release_spinlock to lock
-			         struct Env *kk=blockedbas_env_bta3tna;
+			        // struct Env *kk=blockedbas_env_bta3tna;
 		                   release_spinlock(&ProcessQueues.qlock);
 
-			       //  sched();
 			    }
 
 }
@@ -107,19 +103,19 @@ void wakeup_all(struct Channel *chan)
 
 	 acquire_spinlock(&ProcessQueues.qlock);
 
-
 	    while (queue_size(&chan->queue) > 0) {
 	        // hnDequeue al blocked process mn al channel
 	        struct Env *blockedomnia_env = dequeue(&chan->queue);
 	        blockedomnia_env->env_status=ENV_READY;
 	        // hnInsert the process fe al ready queue
-	        sched_insert_ready0(blockedomnia_env);
+	        sched_insert_ready(blockedomnia_env);
+
 	    }
+
 
 	    // Release the process queue lock
 	    release_spinlock(&ProcessQueues.qlock);
 
-	    // sched();
 
 }
 

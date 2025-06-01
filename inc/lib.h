@@ -7,6 +7,7 @@
 #ifndef FOS_INC_LIB_H
 #define FOS_INC_LIB_H 1
 
+
 #include <inc/types.h>
 #include <inc/stdio.h>
 #include <inc/stdarg.h>
@@ -73,6 +74,7 @@ void* 	sys_sbrk(int increment);
 void 	sys_free_user_mem(uint32 virtual_address, uint32 size);
 void	sys_allocate_user_mem(uint32 virtual_address, uint32 size);
 void	sys_allocate_chunk(uint32 virtual_address, uint32 size, uint32 perms);
+void sys_env_set_priority(int32 envID, int priority);
 void 	sys_move_user_mem(uint32 src_virtual_address, uint32 dst_virtual_address, uint32 size);
 uint32 	sys_isUHeapPlacementStrategyFIRSTFIT();
 uint32 	sys_isUHeapPlacementStrategyBESTFIT();
@@ -83,9 +85,18 @@ void 	sys_set_uheap_strategy(uint32 heapStrategy);
 //Page File
 int 	sys_pf_calculate_allocated_pages(void);
 
+
 //Semaphores
 
-
+void sys_initqueue(struct Env_Queue* queue);
+void sys_enqueue(struct Env_Queue* queue, struct Env* env);
+void* sys_dequeue(struct Env_Queue* queue);
+void sys_schedinsertready(struct Env* env);
+void sys_fos_scheduler();
+void sys_sleep_sem(struct Env_Queue* queue);
+void sys_sleep_sem_sig(struct Env_Queue* queue);
+void sys_release_spin();
+void sys_acquire_spin();
 //Sharing
 //2017
 int 	sys_createSharedObject(char* shareName, uint32 size, uint8 isWritable, void* virtual_address);
@@ -134,3 +145,4 @@ void CheckWSArrayWithoutLastIndex(uint32 *expectedPages, int arraySize);
 #define O_MKDIR		0x0800		/* create directory, not regular file */
 
 #endif	// !FOS_INC_LIB_H
+

@@ -867,12 +867,20 @@ void* create_user_kern_stack(uint32* ptr_user_page_directory)
 #if USE_KHEAP
 	//TODO: [PROJECT'24.MS2 - #07] [2] FAULT HANDLER I - create_user_kern_stack
 	// Write your code here, remove the panic and write your code
-	panic("create_user_kern_stack() is not implemented yet...!!");
+    void* kern_st=kmalloc(KERNEL_STACK_SIZE);
 
-	//allocate space for the user kernel stack.
-	//remember to leave its bottom page as a GUARD PAGE (i.e. not mapped)
-	//return a pointer to the start of the allocated space (including the GUARD PAGE)
-	//On failure: panic
+
+    memset(kern_st, 0, KERNEL_STACK_SIZE);  //5alet stack memory 0
+    if(ptr_user_page_directory!=NULL){
+    	//cprintf("NOOOOOOOOOOOOOOOOOOOOOOO\n");
+    	 unmap_frame(ptr_user_page_directory,(uint32)kern_st);
+    	//cprintf("DDDDDDDDDDDDDDDDDDDDDDDDD\n");
+    }
+    else {
+           panic("page directory 7ikon b NULL");
+       }
+    return kern_st;
+
 
 
 #else
@@ -894,12 +902,12 @@ void delete_user_kern_stack(struct Env* e)
 #if USE_KHEAP
 	//[PROJECT'24.MS3] BONUS
 	// Write your code here, remove the panic and write your code
-	panic("delete_user_kern_stack() is not implemented yet...!!");
+	//panic("delete_user_kern_stack() is not implemented yet...!!");
 
 	//Delete the allocated space for the user kernel stack of this process "e"
 	//remember to delete the bottom GUARD PAGE (i.e. not mapped)
 #else
-	panic("KERNEL HEAP is OFF! user kernel stack can't be deleted");
+	//panic("KERNEL HEAP is OFF! user kernel stack can't be deleted");
 #endif
 }
 //===============================================
@@ -912,6 +920,14 @@ void initialize_uheap_dynamic_allocator(struct Env* e, uint32 daStart, uint32 da
 	//	1) there's no initial allocations for the dynamic allocator of the user heap (=0)
 	//	2) call the initialize_dynamic_allocator(..) to complete the initialization
 	//panic("initialize_uheap_dynamic_allocator() is not implemented yet...!!");
+	   e->start_uheap = daStart;
+		e->uh_block_brk = (uint32*)daStart + 0 ;
+		e->uh_block_hlimit = daLimit ;
+
+
+	    initialize_dynamic_allocator(daStart,0);
+
+
 }
 
 //==============================================================
@@ -964,7 +980,7 @@ void initialize_environment(struct Env* e, uint32* ptr_user_page_directory, unsi
 		e->env_tf = (struct Trapframe *) sp;
 
 		//[3] Set the address of trapret() first - to return on it after env_start() is returned,
-		sp -= 4;
+		  sp -= 4;
 		*(uint32*)sp = (uint32)trapret;
 
 		//[4] Place the context next

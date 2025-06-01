@@ -46,9 +46,8 @@ void acquire_sleeplock(struct sleeplock *lk)
             int kar =1;
 		    // Lock al sleeplock
 		    lk->locked =  kar;
-
-		    // bnRelease the spinlock b3d ma bn acquire al sleep lock
-		    release_spinlock(&(lk->lk));
+         // bnRelease the spinlock b3d ma bn acquire al sleep lock
+		   release_spinlock(&(lk->lk));
 
 }
 
@@ -58,16 +57,14 @@ void release_sleeplock(struct sleeplock *lk)
 	//COMMENT THE FOLLOWING LINE BEFORE START CODING
 	//panic("release_sleeplock is not implemented yet");
 	//Your Code is Here...
-	acquire_spinlock(&(lk->lk));
+	    acquire_spinlock(&(lk->lk));
+
 		if(queue_size( &lk->chan.queue)>0){
 			wakeup_all(&(lk->chan));
 		}
 
-
 		int mennakk =0;
 		lk->locked = mennakk;
-		/*int kar =-1;
-		 lk->pid = kar;*/
 
 		 release_spinlock(&lk->lk);
 

@@ -55,6 +55,7 @@ void release_spinlock(struct spinlock *lk)
 {
 	if(!holding_spinlock(lk))
 	{
+		cprintf("hhhhhhhhhhhhhhhhhhhhe\n");
 		printcallstack(lk);
 		panic("release: lock \"%s\" is either not held or held by another CPU!", lk->name);
 	}

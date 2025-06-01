@@ -12,9 +12,10 @@
 #include <kern/cpu/picirq.h>
 
 
-uint32 isSchedMethodRR(){if(scheduler_method == SCH_RR) return 1; return 0;}
-uint32 isSchedMethodMLFQ(){if(scheduler_method == SCH_MLFQ) return 1; return 0;}
-uint32 isSchedMethodBSD(){if(scheduler_method == SCH_BSD) return 1; return 0;}
+uint32 isSchedMethodRR(){return (scheduler_method == SCH_RR);}
+uint32 isSchedMethodMLFQ(){return (scheduler_method == SCH_MLFQ); }
+uint32 isSchedMethodBSD(){return(scheduler_method == SCH_BSD); }
+uint32 isSchedMethodPRIRR(){return(scheduler_method == SCH_PRIRR); }
 
 //===================================================================================//
 //============================ SCHEDULER FUNCTIONS ==================================//
@@ -23,6 +24,8 @@ static struct Env* (*sched_next[])(void) = {
 [SCH_RR]    fos_scheduler_RR,
 [SCH_MLFQ]  fos_scheduler_MLFQ,
 [SCH_BSD]   fos_scheduler_BSD,
+[SCH_PRIRR]   fos_scheduler_PRIRR,
+
 };
 
 //===================================
@@ -203,7 +206,7 @@ void sched_init_MLFQ(uint8 numOfLevels, uint8 *quantumOfEachLevel)
 	//[PROJECT] MLFQ Scheduler - sched_init_MLFQ
 	//Your code is here
 	//Comment the following line
-	panic("Not implemented yet");
+	//panic("Not implemented yet");
 
 
 	//=========================================
@@ -225,7 +228,7 @@ void sched_init_BSD(uint8 numOfLevels, uint8 quantum)
 	//[PROJECT] BSD Scheduler - sched_init_BSD
 	//Your code is here
 	//Comment the following line
-	panic("Not implemented yet");
+	//panic("Not implemented yet");
 
 
 	//=========================================
@@ -238,9 +241,42 @@ void sched_init_BSD(uint8 numOfLevels, uint8 quantum)
 	//=========================================
 }
 
+//======================================
+// [6] Initialize PRIORITY RR Scheduler:
+//======================================
+void sched_init_PRIRR(uint8 numOfPriorities, uint8 quantum, uint32 starvThresh)
+{
+	 sched_delete_ready_queues();
+	//TODO: [PROJECT'24.MS3 - #07] [3] PRIORITY RR Scheduler - sched_init_PRIRR
+	//Your code is here
+	//Comment the following line
+	//panic("Not implemented yet");
+	//cprintf("1\n");
+
+	   ProcessQueues.env_ready_queues = kmalloc(sizeof(struct Env_Queue)*numOfPriorities);
+	   quantums = kmalloc(sizeof(uint8)*numOfPriorities);
+	   num_of_ready_queues = numOfPriorities;
+			    for (int i = 0; i < num_of_ready_queues; i++)
+			    {
+			        init_queue(&(ProcessQueues.env_ready_queues[i]));
+			    }
+			     quantums[0] = quantum;
+			     kclock_set_quantum(quantums[0]);
+			    sched_set_starv_thresh(starvThresh);
+
+
+	//=========================================
+	//DON'T CHANGE THESE LINES=================
+	uint16 cnt0 = kclock_read_cnt0_latch() ; //read after write to ensure it's set to the desired value
+	cprintf("*PRIORITY RR scheduler with initial clock = %d\n", cnt0);
+	mycpu()->scheduler_status = SCH_STOPPED;
+	scheduler_method = SCH_PRIRR;
+	//=========================================
+	//=========================================
+}
 
 //=========================
-// [6] RR Scheduler:
+// [7] RR Scheduler:
 //=========================
 struct Env* fos_scheduler_RR()
 {
@@ -274,7 +310,7 @@ struct Env* fos_scheduler_RR()
 }
 
 //=========================
-// [6] MLFQ Scheduler:
+// [8] MLFQ Scheduler:
 //=========================
 struct Env* fos_scheduler_MLFQ()
 {
@@ -293,7 +329,7 @@ struct Env* fos_scheduler_MLFQ()
 }
 
 //=========================
-// [7] BSD Scheduler:
+// [9] BSD Scheduler:
 //=========================
 struct Env* fos_scheduler_BSD()
 {
@@ -308,25 +344,84 @@ struct Env* fos_scheduler_BSD()
 	panic("Not implemented yet");
 
 }
+//=============================
+// [10] PRIORITY RR Scheduler:
+//=============================
+struct Env* fos_scheduler_PRIRR()
+{
+	/*To protect process Qs (or info of current process) in multi-CPU************************/
+	if(!holding_spinlock(&ProcessQueues.qlock))
+		panic("fos_scheduler_PRIRR: q.lock is not held by this CPU while it's expected to be.");
+	/****************************************************************************************/
+	//TODO: [PROJECT'24.MS3 - #08] [3] PRIORITY RR Scheduler - fos_scheduler_PRIRR
+	//Your code is here
+	//Comment the following line
+	//panic("Not implemented yet");
+	struct Env *next_env = NULL;
+	struct Env *cur_env = get_cpu_proc();
+	//cprintf("2\n");
+	if (cur_env != NULL)
+		{
+	      //cprintf("walaaaaaaaaaaaaaaaaaaaaaaaa\n");
+			enqueue(&(ProcessQueues.env_ready_queues[cur_env->priority]), cur_env);
+			// cprintf("process1 state is %d=",cur_env->env_status);
+		}
+
+	for(int i=0;i<num_of_ready_queues;i++)
+	{
+		int cur_que_size=queue_size(&(ProcessQueues.env_ready_queues[i]));
+		//cprintf("3aa eldogryyyyyyyyy\n");
+		if(cur_que_size>0)
+		{
+			next_env=dequeue(&(ProcessQueues.env_ready_queues[i]));
+		    //cprintf("ggggggggggggggggggggggaay\n");
+		//	cprintf("process2 state is %d=",next_env->env_status);
+			break;
+		}
+	}
+	kclock_set_quantum(quantums[0]);
+	return next_env;
+}
 
 //========================================
-// [8] Clock Interrupt Handler
+// [11] Clock Interrupt Handler
 //	  (Automatically Called Every Quantum)
 //========================================
 void clock_interrupt_handler(struct Trapframe* tf)
 {
-	if (isSchedMethodBSD())
+	if (isSchedMethodPRIRR())
 	{
-		//[PROJECT] BSD Scheduler - clock_interrupt_handler
+		//TODO: [PROJECT'24.MS3 - #09] [3] PRIORITY RR Scheduler - clock_interrupt_handler
 		//Your code is here
 		//Comment the following line
-		panic("Not implemented yet");
+		//panic("Not implemented yet");
+		//cprintf("3\n");
+		struct Env* starv_proc;
+		acquire_spinlock(&(ProcessQueues.qlock));
+		if (ticks > starvation_Threshold)
+		{
+			//cprintf("3oooooooooooooooooooooooooo\n");
+		    for (int i_mena = 1; i_mena< num_of_ready_queues; i_mena++)
+		    {
+		    	starv_proc = dequeue(&(ProcessQueues.env_ready_queues[i_mena]));
+		        while (starv_proc != NULL)
+		        {
+		        	//cprintf("woooooowwwwwwwwwwwwwwwwwwwwwwwww\n");
+		            if (starv_proc->priority > 0)
+		            {
+		            //	cprintf("b8888888888888888888888888\n");
+		            	starv_proc->priority--;
+		            }
+		            sched_insert_ready(starv_proc);
+		            starv_proc = dequeue(&(ProcessQueues.env_ready_queues[i_mena]));
+		        }
+		    }
+		}
+		release_spinlock(&(ProcessQueues.qlock));
+
 	}
-
-
-
 	/********DON'T CHANGE THESE LINES***********/
-	ticks++ ;
+	ticks++;
 	struct Env* p = get_cpu_proc();
 	if (p == NULL)
 	{

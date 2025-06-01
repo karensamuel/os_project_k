@@ -127,6 +127,7 @@ int sys_check_WS_list(uint32* WS_list_content, int actual_WS_list_size, uint32 l
 	{
 		if(LIST_SIZE(&(env->page_WS_list)) != actual_WS_list_size)
 		{
+			cprintf("size not equal\n");
 			return WS_list_validation = 0;
 		}
 	}
@@ -135,6 +136,7 @@ int sys_check_WS_list(uint32* WS_list_content, int actual_WS_list_size, uint32 l
 	{
 		if (ROUNDDOWN(env->page_last_WS_element->virtual_address, PAGE_SIZE) != ROUNDDOWN(last_WS_element_content, PAGE_SIZE))
 		{
+			cprintf("addresses not match\n");
 			return WS_list_validation = 0;
 		}
 	}
@@ -178,6 +180,7 @@ int sys_check_WS_list(uint32* WS_list_content, int actual_WS_list_size, uint32 l
 		{
 			if (ROUNDDOWN(ptr_WS_element->virtual_address, PAGE_SIZE) != ROUNDDOWN(WS_list_content[idx_WS_list], PAGE_SIZE))
 			{
+				cprintf("index not correct\n");
 				WS_list_validation = 0;
 				break;
 			}
@@ -202,6 +205,7 @@ int sys_check_WS_list(uint32* WS_list_content, int actual_WS_list_size, uint32 l
 			}
 			if (!found)
 			{
+				cprintf("not founded element \n");
 				WS_list_validation = 0;
 				break;
 			}
@@ -223,6 +227,7 @@ int sys_check_WS_list(uint32* WS_list_content, int actual_WS_list_size, uint32 l
 			}
 			if (found)
 			{
+				cprintf("Errrrrrrrrrrror \n");
 				WS_list_validation = 0;
 				break;
 			}

@@ -346,7 +346,11 @@ void sys_allocate_user_mem(uint32 virtual_address, uint32 size)
 	return;
 }
 
-
+void sys_env_set_priority(int32 envID, int priority)
+{
+	env_set_priority(envID, priority);
+	return;
+}
 void sys_allocate_chunk(uint32 virtual_address, uint32 size, uint32 perms)
 {
 	//TODO: [PROJECT'24.MS1 - #03] [2] SYSTEM CALLS - Params Validation
@@ -376,8 +380,49 @@ void sys_set_uheap_strategy(uint32 heapStrategy)
 /* SEMAPHORES SYSTEM CALLS */
 /*******************************/
 //[PROJECT'24.MS3] ADD SUITABLE CODE HERE
+void sys_initqueue(struct Env_Queue* queue)
+{
+	init_queue(queue);
+	return;
+}
+void sys_enqueue(struct Env_Queue* queue, struct Env* env)
+{
+	enqueue(queue,env);
+	return;
+}
+void* sys_dequeue(struct Env_Queue* queue)
+{
+	return (void *) dequeue(queue);
 
+}
+void sys_sleep_sem(struct Env_Queue* queue)
+{
+	sleep_sem(queue);
+	return;
 
+}
+void sys_sleep_sem_sig(struct Env_Queue* queue)
+{
+	sleep_sem_sig(queue);
+	return;
+
+}
+void sys_schedinsertready(struct Env* env){
+	sched_insert_ready(env);
+	return;
+}
+void sys_fos_scheduler(){
+	fos_scheduler();
+	return;
+}
+void sys_release_spin(){
+	release_spin();
+		return;
+}
+void sys_acquire_spin(){
+	 acquire_spin();
+		return;
+}
 /*******************************/
 /* SHARED MEMORY SYSTEM CALLS */
 /*******************************/
@@ -708,9 +753,49 @@ uint32 syscall(uint32 syscallno, uint32 a1, uint32 a2, uint32 a3, uint32 a4, uin
 	case SYS_allocate_user_mem:
 		sys_allocate_user_mem((uint32) a1, (uint32) a2);
 		return 0;
+	case SYS_env_set_priority:
+		sys_env_set_priority((uint32)a1, (int)a2);
+		return 0;
+	case SYS_initqueue:
+	    sys_initqueue((struct Env_Queue*)a1);
+	    return 0;
+	    break;
+	case SYS_enqueue:
+		 sys_enqueue((struct Env_Queue*) a1, (struct Env*) a2);
+		 return 0;
+		  break;
+	case SYS_dequeue:
+	    sys_dequeue((struct Env_Queue*) a1);
+		return 0;
+	    break;
+	case SYS_schedinsertready:
+		    sys_schedinsertready((struct Env*) a1);
+			return 0;
+		    break;
+	case SYS_fos_scheduler:
+			    sys_fos_scheduler();
+				return 0;
+			    break;
+	case SYS_release_spin:
+		            sys_release_spin();
+					return 0;
+				    break;
+	case SYS_acquire_spin:
+		            sys_acquire_spin();
+					return 0;
+				    break;
+	case SYS_sleep_sem:
+		 sys_sleep_sem((struct Env_Queue*) a1);
+		  return 0;
+		break;
+	case SYS_sleep_sem_sig:
+		sys_sleep_sem_sig((struct Env_Queue*) a1);
+			  return 0;
+			break;
 	case NSYSCALLS:
 		return 	-E_INVAL;
 		break;
+
 
 	}
 	//panic("syscall not implemented");

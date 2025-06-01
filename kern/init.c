@@ -80,8 +80,8 @@ void FOS_initialize()
 #if USE_KHEAP
 		initialize_kheap_dynamic_allocator(KERNEL_HEAP_START, PAGE_SIZE, KERNEL_HEAP_START + DYN_ALLOC_MAX_SIZE);
 #endif
-		//	page_check();
-		//setPageReplacmentAlgorithmNchanceCLOCK();
+			//page_check();
+		 //setPageReplacmentAlgorithmNchanceCLOCK(5);
 		//setPageReplacmentAlgorithmLRU(PG_REP_LRU_TIME_APPROX);
 		setPageReplacmentAlgorithmFIFO();
 		//setPageReplacmentAlgorithmLRU(PG_REP_LRU_LISTS_APPROX);
